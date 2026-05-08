@@ -1,12 +1,8 @@
 {
-  "version": 2,
   "builds": [
     {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "src": "client/index.html",
+      "use": "@vercel/static-build"
     },
     {
       "src": "server/index.js",
@@ -16,15 +12,15 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server/index.js"
+      "dest": "server/index.js"
     },
     {
       "src": "/auth/(.*)",
-      "dest": "/server/index.js"
+      "dest": "server/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "client/index.html"
     }
   ]
 }
