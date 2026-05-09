@@ -113,7 +113,7 @@ function Analytics() {
 
   return (
     <div style={styles.container}>
-      <h1>Analytics Dashboard</h1>
+      <h1 style={styles.title}>Analytics Dashboard</h1>
 
       <select
         value={range}

@@ -33,7 +33,7 @@ alert(`Request logged as sent. Feedback link: ${feedbackLink}`)
 
   return (
     <div style={{ padding: '40px', color: 'white', backgroundColor: '#111827', minHeight: '100vh' }}>
-      <h1>Send Review Request</h1>
+      <h1 style={styles.title}>Send Review Request</h1>
 
       <form onSubmit={handleSend}>
         <input

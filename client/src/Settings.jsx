@@ -66,7 +66,7 @@ function Settings() {
 
   return (
     <div style={styles.container}>
-      <h1>Settings</h1>
+      <h1 style={styles.title}>Settings</h1>
 
       <div style={styles.card}>
         <label>Business Name</label>
