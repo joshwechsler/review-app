@@ -44,7 +44,7 @@ function Reviews() {
       [item.id]: 'Generating reply...'
     }))
 
-    const response = await fetch('http://localhost:3001/api/generate-reply', {
+    const response = await fetch('api/generate-reply', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
