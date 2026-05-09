@@ -118,7 +118,9 @@ useEffect(() => {
           ) : (
             <div style={styles.container}>
               <div style={styles.card}>
-                <h1>{settings?.feedback_headline || 'How was your experience?'}</h1>
+                <h1 style={styles.feedbackTitle}>
+  {settings?.feedback_headline || 'How was your experience?'}
+</h1>
 
                 <div style={styles.stars}>
                   {[1, 2, 3, 4, 5].map((star) => (
