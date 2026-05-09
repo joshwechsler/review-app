@@ -183,12 +183,13 @@ const styles = {
   },
   card: {
     backgroundColor: '#1f2937',
-    padding: '30px',
-    borderRadius: '16px',
-    width: '100%',
-    maxWidth: '500px',
-    textAlign: 'center'
-  },
+  padding: '40px',
+  borderRadius: '16px',
+  width: '100%',
+  maxWidth: '640px',
+  margin: '0 auto',
+  textAlign: 'center'
+},
   stars: {
     display: 'flex',
     justifyContent: 'center',
@@ -202,33 +203,43 @@ const styles = {
     borderRadius: '10px',
     cursor: 'pointer'
   },
-  input: {
-    width: '100%',
-    marginTop: '20px',
-    padding: '12px',
-    borderRadius: '10px',
-    border: '1px solid #444'
-  },
+  feedbackInput: {
+  width: '100%',
+  boxSizing: 'border-box',
+  padding: '14px 16px',
+  borderRadius: '10px',
+  border: 'none',
+  marginTop: '24px',
+  fontSize: '16px'
+},
   textarea: {
     width: '100%',
-    minHeight: '100px',
-    marginTop: '20px',
-    padding: '12px',
-    borderRadius: '10px',
-    border: '1px solid #444',
-    resize: 'none'
-  },
+  boxSizing: 'border-box',
+  padding: '14px 16px',
+  borderRadius: '10px',
+  border: 'none',
+  marginTop: '24px',
+  minHeight: '140px',
+  fontSize: '16px'
+},
   submitButton: {
-    marginTop: '20px',
-    width: '100%',
-    padding: '14px',
-    border: 'none',
-    borderRadius: '10px',
-    backgroundColor: '#a855f7',
-    color: 'white',
-    fontWeight: 'bold',
-    cursor: 'pointer'
-  }
+  marginTop: '20px',
+  width: '100%',
+  padding: '14px',
+  border: 'none',
+  borderRadius: '10px',
+  backgroundColor: '#a855f7',
+  color: 'white',
+  fontWeight: 'bold',
+  cursor: 'pointer'
+},
+
+feedbackTitle: {
+  color: 'white',
+  fontSize: 'clamp(36px, 6vw, 64px)',
+  lineHeight: 1.1,
+  marginBottom: '24px'
+},
 }
 
 export default App
