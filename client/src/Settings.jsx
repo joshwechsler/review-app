@@ -130,6 +130,13 @@ function Settings() {
 }
 
 const styles = {
+  title: {
+  color: 'white',
+  textAlign: 'center',
+  fontSize: 'clamp(36px, 6vw, 72px)',
+  lineHeight: 1.1,
+  marginBottom: '24px'
+},
   container: {
     minHeight: '100vh',
     backgroundColor: '#111827',
