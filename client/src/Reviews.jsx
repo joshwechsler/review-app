@@ -216,16 +216,20 @@ const styles = {
     minHeight: '100vh',
     backgroundColor: '#111827',
     color: 'white',
-    padding: '40px',
+    padding: '16px',
     position: 'relative'
   },
   card: {
-    backgroundColor: '#1f2937',
-    padding: '20px',
-    borderRadius: '12px',
-    marginBottom: '16px',
-    textAlign: 'center'
-  },
+  backgroundColor: '#1f2937',
+  padding: '24px',
+  borderRadius: '18px',
+  marginBottom: '24px',
+  textAlign: 'center',
+  width: '100%',
+  maxWidth: '1100px',
+  margin: '0 auto 24px auto',
+  boxSizing: 'border-box'
+},
   notificationBell: {
     position: 'absolute',
     top: '24px',
@@ -296,14 +300,21 @@ const styles = {
     borderRadius: '8px'
   },
   textarea: {
-    width: '100%',
-    marginTop: '10px',
-    padding: '10px',
-    borderRadius: '8px',
-    border: 'none',
-    minHeight: '100px',
-    resize: 'vertical'
-  },
+  width: '100%',
+  marginTop: '16px',
+  padding: '18px',
+  borderRadius: '14px',
+  border: 'none',
+  backgroundColor: '#3a3a3a',
+  color: 'white',
+  fontSize: '16px',
+  lineHeight: 1.6,
+  boxSizing: 'border-box',
+  overflowWrap: 'break-word',
+  whiteSpace: 'pre-wrap',
+  resize: 'vertical',
+  minHeight: '180px'
+},
   copyButton: {
     marginTop: '8px',
     padding: '6px 10px',
