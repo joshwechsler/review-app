@@ -110,7 +110,7 @@ function Reviews() {
         )}
       </div>
 
-      <h1>Google Reviews</h1>
+      <h1 style={styles.title}>Google Reviews</h1>
 
       {reviews.length === 0 ? (
         <p>No reviews yet.</p>
@@ -206,6 +206,12 @@ function Reviews() {
 }
 
 const styles = {
+  title: {
+  color: 'white',
+  textAlign: 'center',
+  fontSize: 'clamp(40px, 6vw, 72px)',
+  marginBottom: '24px'
+},
   container: {
     minHeight: '100vh',
     backgroundColor: '#111827',
