@@ -54,12 +54,12 @@ useEffect(() => {
     }
 
     if (rating >= 4) {
-      window.location.href = import.meta.env.VITE_GOOGLE_REVIEW_LINK
-      return
-    }
+  const googleReviewLink =
+    settings?.google_review_link ||
+    'https://search.google.com/local/writereview?placeid=YOUR_FULL_GOOGLE_LINK'
 
-    if (rating >= 4) {
-  window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJzexkcTx26IkRq7Ekxb8Et4g'
+  window.location.href = googleReviewLink
+  return
 }
 
     const { error } = await supabase.from('feedback_responses').insert([
