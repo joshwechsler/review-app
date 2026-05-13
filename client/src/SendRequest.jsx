@@ -35,27 +35,27 @@ alert(`Request logged as sent. Feedback link: ${feedbackLink}`)
     <div style={{ padding: '40px', color: 'white', backgroundColor: '#111827', minHeight: '100vh' }}>
       <h1 style={styles.title}>Send Review Request</h1>
 
-      <form onSubmit={handleSend}>
-        <input
-          type="text"
-          placeholder="Customer Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ display: 'block', marginBottom: '16px', padding: '10px', width: '300px' }}
-        />
+      <form onSubmit={handleSubmit} style={styles.card}>
+  <input
+    type="text"
+    placeholder="Customer Name"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+    style={styles.input}
+  />
 
-        <input
-          type="email"
-          placeholder="Customer Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ display: 'block', marginBottom: '16px', padding: '10px', width: '300px' }}
-        />
+  <input
+    type="email"
+    placeholder="Customer Email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    style={styles.input}
+  />
 
-        <button type="submit" style={{ padding: '10px 16px' }}>
-          Send Request
-        </button>
-      </form>
+  <button type="submit" style={styles.button}>
+    Send Request
+  </button>
+</form>
     </div>
   )
 }
@@ -65,15 +65,44 @@ const styles = {
     minHeight: '100vh',
     backgroundColor: '#111827',
     color: 'white',
-    padding: '40px'
+    padding: '40px 16px',
+    textAlign: 'center'
   },
-
+  title: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 'clamp(36px, 6vw, 72px)',
+    lineHeight: 1.1,
+    marginBottom: '32px'
+  },
   card: {
-    maxWidth: '500px',
+    width: '100%',
+    maxWidth: '520px',
     margin: '0 auto',
-    backgroundColor: '#1f2937',
-    padding: '32px',
-    borderRadius: '16px'
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px'
+  },
+  input: {
+    width: '100%',
+    padding: '14px',
+    borderRadius: '8px',
+    border: '1px solid #6b7280',
+    backgroundColor: '#3a3a3a',
+    color: 'white',
+    fontSize: '16px',
+    boxSizing: 'border-box'
+  },
+  button: {
+    width: '100%',
+    padding: '14px',
+    borderRadius: '8px',
+    border: 'none',
+    backgroundColor: '#6366f1',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: '16px',
+    cursor: 'pointer'
   }
 }
 
