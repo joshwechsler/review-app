@@ -59,5 +59,23 @@ alert(`Request logged as sent. Feedback link: ${feedbackLink}`)
     </div>
   )
 }
+)
+
+const styles = {
+  container: {
+    minHeight: '100vh',
+    backgroundColor: '#111827',
+    color: 'white',
+    padding: '40px'
+  },
+
+  card: {
+    maxWidth: '500px',
+    margin: '0 auto',
+    backgroundColor: '#1f2937',
+    padding: '32px',
+    borderRadius: '16px'
+  }
+}
 
 export default SendRequest
