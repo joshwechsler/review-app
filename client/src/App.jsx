@@ -164,7 +164,7 @@ useEffect(() => {
         }
       />
 
-      <Route path="/send" element={<SendRequest />} />
+      <Route path="/send-request" element={<SendRequest />} />
       <Route path="/private-feedback" element={<PrivateFeedback />} />
       <Route path="/reviews" element={<Reviews />} />
       <Route path="/analytics" element={<Analytics />} />
