@@ -110,27 +110,86 @@ app.get('/api/google/reviews', async (req, res) => {
   try {
     oauth2Client.setCredentials(googleTokens)
 
-    const mybusinessaccountmanagement = google.mybusinessaccountmanagement({
+    // Step 1: Get business accounts
+    const accountApi = google.mybusinessaccountmanagement({
       version: 'v1',
       auth: oauth2Client
     })
 
-    const accountsResponse = await mybusinessaccountmanagement.accounts.list()
+    const accountsResponse = await accountApi.accounts.list()
     const accounts = accountsResponse.data.accounts || []
+
+    if (accounts.length === 0) {
+      return res.json({
+        success: false,
+        error: 'No Google Business accounts found'
+      })
+    }
+
+    const accountName = accounts[0].name
+
+    // Step 2: Get locations
+    const businessInfo = google.mybusinessbusinessinformation({
+      version: 'v1',
+      auth: oauth2Client
+    })
+
+    const locationsResponse = await businessInfo.accounts.locations.list({
+      parent: accountName
+    })
+
+    const locations = locationsResponse.data.locations || []
+
+    if (locations.length === 0) {
+      return res.json({
+        success: false,
+        error: 'No business locations found'
+      })
+    }
+
+    const locationName = locations[0].name
+
+    // Step 3: Get reviews
+    const reviewsApi = google.mybusiness({
+      version: 'v4',
+      auth: oauth2Client
+    })
+
+    const reviewsResponse = await reviewsApi.accounts.locations.reviews.list({
+      parent: locationName
+    })
+
+    const reviews = reviewsResponse.data.reviews || []
+
+    // Step 4: Save reviews into Supabase
+    for (const review of reviews) {
+      await supabase.from('reviews').upsert({
+        reviewer_name: review.reviewer?.displayName || 'Anonymous',
+        rating: review.starRating
+          ? parseInt(review.starRating.replace('STAR', ''))
+          : 5,
+        review_text: review.comment || '',
+        platform: 'Google',
+        reviewed_at: review.createTime
+      })
+    }
 
     res.json({
       success: true,
-      accounts
+      synced: reviews.length,
+      reviews
     })
-   } catch (error) {
-    console.error('AI reply error FULL:', error)
+
+  } catch (error) {
+    console.error('Google review sync error:', error)
 
     res.status(500).json({
-      error: 'Failed to generate reply',
+      error: 'Failed to sync Google reviews',
       details: error.message
     })
   }
 })
+  
 app.post('/api/generate-reply', async (req, res) => {
   console.log('Generate reply route hit:', req.body)
 
