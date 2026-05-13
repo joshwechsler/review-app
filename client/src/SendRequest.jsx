@@ -59,7 +59,6 @@ alert(`Request logged as sent. Feedback link: ${feedbackLink}`)
     </div>
   )
 }
-)
 
 const styles = {
   container: {
