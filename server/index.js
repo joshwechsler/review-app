@@ -87,12 +87,24 @@ app.get('/auth/google/callback', async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code)
 
     googleTokens = tokens
-    oauth2Client.setCredentials(tokens)
+oauth2Client.setCredentials(tokens)
 
-    console.log('Google connected successfully')
-    console.log('Google tokens saved temporarily')
+const { error } = await supabase
+  .from('google_tokens')
+  .upsert({
+    id: 'default',
+    tokens
+  })
 
-    res.send('Google account connected! You can close this tab.')
+if (error) {
+  console.error('Supabase token save error:', error)
+  return res.send('Google connected, but token save failed.')
+}
+
+console.log('Google connected successfully')
+console.log('Google tokens saved to Supabase')
+
+res.send('Google account connected! You can close this tab.')
   } catch (error) {
     console.error('Google auth error:', error)
     res.send('Error connecting Google')
@@ -101,14 +113,27 @@ app.get('/auth/google/callback', async (req, res) => {
 // 👇 ADD EVERYTHING BELOW THIS LINE
 
 app.get('/api/google/reviews', async (req, res) => {
-  if (!googleTokens) {
+  let savedTokens = googleTokens
+
+if (!savedTokens) {
+  const { data, error } = await supabase
+    .from('google_tokens')
+    .select('tokens')
+    .eq('id', 'default')
+    .single()
+
+  if (error || !data?.tokens) {
     return res.status(401).json({
       error: 'Google account not connected yet'
     })
   }
 
+  savedTokens = data.tokens
+  googleTokens = savedTokens
+}
+
   try {
-    oauth2Client.setCredentials(googleTokens)
+    oauth2Client.setCredentials(savedTokens)
 
     // Step 1: Get business accounts
     const accountApi = google.mybusinessaccountmanagement({
