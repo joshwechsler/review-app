@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",
+    "@supabase/supabase-js": "^2.105.4",
     "axios": "^1.15.2",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
