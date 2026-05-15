@@ -170,8 +170,9 @@ if (!savedTokens) {
     })
 
     const locationsResponse = await businessInfo.accounts.locations.list({
-      parent: accountName
-    })
+  parent: accountName,
+  readMask: 'name,title'
+})
 
     const locations = locationsResponse.data.locations || []
 
