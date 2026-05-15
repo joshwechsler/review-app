@@ -5,7 +5,7 @@ const axios = require('axios')
 const { google } = require('googleapis')
 const { createClient } = require('@supabase/supabase-js')
 const Anthropic = require('@anthropic-ai/sdk')
-const { createClient } = require('@supabase/supabase-js')
+
 
 
 
@@ -17,10 +17,6 @@ const app = express()
 const PORT = 3001
 let googleTokens = null
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-)
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
