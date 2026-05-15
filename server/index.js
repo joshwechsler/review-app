@@ -186,9 +186,10 @@ if (!savedTokens) {
     const locationName = locations[0].name
 
 const accessToken = savedTokens.access_token
+const reviewParent = `${accountName}/${locationName}`
 
 const reviewsResponse = await axios.get(
-  `https://mybusiness.googleapis.com/v4/${locationName}/reviews`,
+  `https://mybusiness.googleapis.com/v4/${reviewParent}/reviews`,
   {
     headers: {
       Authorization: `Bearer ${accessToken}`
