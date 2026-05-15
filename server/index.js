@@ -219,11 +219,11 @@ const reviews = reviewsResponse.data.reviews || []
     })
 
   } catch (error) {
-    console.error('Google review sync error:', error)
+    console.error('Google review sync error:', error.response?.data || error.message)
 
     res.status(500).json({
       error: 'Failed to sync Google reviews',
-      details: error.message
+      details: error.response?.data || error.message
     })
   }
 })
