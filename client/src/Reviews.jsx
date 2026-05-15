@@ -25,18 +25,35 @@ function Reviews() {
   }, [lowReviewCount])
 
   const fetchReviews = async () => {
-    const { data, error } = await supabase
-      .from('reviews')
-      .select('*')
-      .order('reviewed_at', { ascending: false })
+  try {
+    const response = await fetch('/api/google/reviews')
+    const data = await response.json()
 
-    if (error) {
-      console.error(error)
+    if (!response.ok) {
+      console.error(data)
       return
     }
 
-    setReviews(data)
+    const formattedReviews = data.reviews.map((review) => ({
+      id: review.reviewId,
+      reviewer_name: review.reviewer?.displayName || 'Anonymous',
+      rating:
+        review.starRating === 'FIVE' ? 5 :
+        review.starRating === 'FOUR' ? 4 :
+        review.starRating === 'THREE' ? 3 :
+        review.starRating === 'TWO' ? 2 :
+        review.starRating === 'ONE' ? 1 : 0,
+      review_text: review.comment || '',
+      reviewed_at: review.createTime,
+      platform: 'Google',
+      reply: review.reviewReply?.comment || ''
+    }))
+
+    setReviews(formattedReviews)
+  } catch (error) {
+    console.error('Error loading Google reviews:', error)
   }
+}
 
   const generateReply = async (item) => {
     setReplies((prev) => ({
