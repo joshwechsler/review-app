@@ -185,17 +185,18 @@ if (!savedTokens) {
 
     const locationName = locations[0].name
 
-    // Step 3: Get reviews
-    const reviewsApi = google.mybusiness({
-      version: 'v4',
-      auth: oauth2Client
-    })
+const accessToken = savedTokens.access_token
 
-    const reviewsResponse = await reviewsApi.accounts.locations.reviews.list({
-      parent: locationName
-    })
+const reviewsResponse = await axios.get(
+  `https://mybusiness.googleapis.com/v4/${locationName}/reviews`,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  }
+)
 
-    const reviews = reviewsResponse.data.reviews || []
+const reviews = reviewsResponse.data.reviews || []
 
     // Step 4: Save reviews into Supabase
     for (const review of reviews) {
