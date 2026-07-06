@@ -1,13 +1,16 @@
 import { supabase } from './supabase'
 import { useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import SendRequest from './SendRequest'
 import PrivateFeedback from './PrivateFeedback'
 import Reviews from './Reviews'
 import Analytics from './Analytics'
 import Settings from './Settings'
+import Nav from './Nav'
 
 function App() {
+  const location = useLocation()
+  const showNav = location.pathname !== '/feedback'
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
   const [email, setEmail] = useState('')
@@ -104,6 +107,8 @@ useEffect(() => {
   fetchSettings()
 }, [])
   return (
+    <>
+      {showNav && <Nav />}
     <Routes>
       <Route
         path="/feedback"
@@ -169,7 +174,9 @@ useEffect(() => {
       <Route path="/reviews" element={<Reviews />} />
       <Route path="/analytics" element={<Analytics />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/" element={<Navigate to="/reviews" replace />} />
     </Routes>
+    </>
   )
 }
 
