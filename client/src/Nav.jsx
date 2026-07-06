@@ -1,18 +1,23 @@
 import { NavLink } from 'react-router-dom'
 
 const links = [
-  { to: '/send-request', label: 'Send Request' },
-  { to: '/private-feedback', label: 'Private Feedback' },
-  { to: '/reviews', label: 'Reviews' },
-  { to: '/analytics', label: 'Analytics' },
-  { to: '/settings', label: 'Settings' }
+  { to: '/overview', label: 'Overview', icon: '⬡' },
+  { to: '/reviews', label: 'Reviews', icon: '★' },
+  { to: '/private-feedback', label: 'Inbox', icon: '✉' },
+  { to: '/send-request', label: 'Send Request', icon: '↑' },
+  { to: '/analytics', label: 'Analytics', icon: '◈' },
+  { to: '/settings', label: 'Settings', icon: '⚙' }
 ]
 
 function Nav() {
   return (
-    <nav style={styles.nav}>
-      <span style={styles.logo}>Honeyplate Reviews</span>
-      <div style={styles.links}>
+    <aside style={styles.sidebar}>
+      <div style={styles.logo}>
+        <div style={styles.logoMark}>H</div>
+        <span style={styles.logoText}>Honeyplate</span>
+      </div>
+
+      <nav style={styles.nav}>
         {links.map((link) => (
           <NavLink
             key={link.to}
@@ -22,49 +27,105 @@ function Nav() {
               ...(isActive ? styles.activeLink : {})
             })}
           >
+            <span style={styles.icon}>{link.icon}</span>
             {link.label}
           </NavLink>
         ))}
+      </nav>
+
+      <div style={styles.footer}>
+        <div style={styles.footerDot} />
+        <span style={styles.footerText}>Google Connected</span>
       </div>
-    </nav>
+    </aside>
   )
 }
 
 const styles = {
-  nav: {
+  sidebar: {
+    width: '220px',
+    minWidth: '220px',
+    backgroundColor: '#0f172a',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#1f2937',
-    padding: '0 32px',
-    height: '60px',
-    borderBottom: '1px solid #374151',
+    flexDirection: 'column',
+    padding: '0',
     position: 'sticky',
     top: 0,
-    zIndex: 100
+    height: '100vh',
+    overflowY: 'auto'
   },
   logo: {
-    color: '#a855f7',
-    fontWeight: 'bold',
-    fontSize: '18px',
-    letterSpacing: '-0.3px'
-  },
-  links: {
     display: 'flex',
-    gap: '8px'
+    alignItems: 'center',
+    gap: '10px',
+    padding: '24px 20px 20px',
+    borderBottom: '1px solid #1e293b'
+  },
+  logoMark: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '8px',
+    backgroundColor: '#7c3aed',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    fontWeight: '700',
+    fontSize: '16px',
+    flexShrink: 0
+  },
+  logoText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: '15px',
+    letterSpacing: '-0.2px'
+  },
+  nav: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '12px 10px',
+    gap: '2px',
+    flex: 1
   },
   link: {
-    color: '#9ca3af',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    color: '#94a3b8',
     textDecoration: 'none',
-    padding: '6px 14px',
+    padding: '9px 12px',
     borderRadius: '8px',
     fontSize: '14px',
     fontWeight: '500',
-    transition: 'background 0.15s'
+    transition: 'all 0.15s'
   },
   activeLink: {
     color: 'white',
-    backgroundColor: '#374151'
+    backgroundColor: '#1e3a5f'
+  },
+  icon: {
+    fontSize: '14px',
+    width: '18px',
+    textAlign: 'center',
+    flexShrink: 0
+  },
+  footer: {
+    padding: '16px 20px',
+    borderTop: '1px solid #1e293b',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  footerDot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    backgroundColor: '#10b981',
+    flexShrink: 0
+  },
+  footerText: {
+    color: '#64748b',
+    fontSize: '12px'
   }
 }
 
