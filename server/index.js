@@ -78,7 +78,40 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.GOOGLE_REDIRECT_URI
 )
+async function getFreshTokens() {
+  const { data, error } = await supabase
+    .from('google_tokens')
+    .select('tokens')
+    .eq('id', 'default')
+    .single()
 
+  if (error || !data?.tokens) {
+    throw new Error('Google tokens not found')
+  }
+
+  const tokens = data.tokens
+  oauth2Client.setCredentials(tokens)
+
+  if (tokens.expiry_date && tokens.expiry_date < Date.now()) {
+    const { credentials } = await oauth2Client.refreshAccessToken()
+
+    const updatedTokens = {
+      ...tokens,
+      ...credentials
+    }
+
+    await supabase
+      .from('google_tokens')
+      .upsert({
+        id: 'default',
+        tokens: updatedTokens
+      })
+
+    oauth2Client.setCredentials(updatedTokens)
+  }
+
+  return oauth2Client
+}
 // Step 1: Redirect to Google login
 app.get('/auth/google', (req, res) => {
   const url = oauth2Client.generateAuthUrl({
