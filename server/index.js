@@ -156,32 +156,14 @@ res.send('Google account connected! You can close this tab.')
 // 👇 ADD EVERYTHING BELOW THIS LINE
 
 app.get('/api/google/reviews', async (req, res) => {
-  let savedTokens = googleTokens
-
-if (!savedTokens) {
-  const { data, error } = await supabase
-    .from('google_tokens')
-    .select('tokens')
-    .eq('id', 'default')
-    .single()
-
-  if (error || !data?.tokens) {
-    return res.status(401).json({
-      error: 'Google account not connected yet'
-    })
-  }
-
-  savedTokens = data.tokens
-  googleTokens = savedTokens
-}
-
   try {
-    oauth2Client.setCredentials(savedTokens)
+    const auth = await getFreshTokens()
+    googleTokens = auth.credentials
 
     // Step 1: Get business accounts
     const accountApi = google.mybusinessaccountmanagement({
       version: 'v1',
-      auth: oauth2Client
+      auth
     })
 
     const accountsResponse = await accountApi.accounts.list()
@@ -199,13 +181,13 @@ if (!savedTokens) {
     // Step 2: Get locations
     const businessInfo = google.mybusinessbusinessinformation({
       version: 'v1',
-      auth: oauth2Client
+      auth
     })
 
     const locationsResponse = await businessInfo.accounts.locations.list({
-  parent: accountName,
-  readMask: 'name,title'
-})
+      parent: accountName,
+      readMask: 'name,title'
+    })
 
     const locations = locationsResponse.data.locations || []
 
@@ -217,28 +199,30 @@ if (!savedTokens) {
     }
 
     const locationName = locations[0].name
+    const reviewParent = `${accountName}/${locationName}`
 
-const accessToken = savedTokens.access_token
-const reviewParent = `${accountName}/${locationName}`
+    // Step 3: Get reviews
+    const reviewsResponse = await axios.get(
+      `https://mybusiness.googleapis.com/v4/${reviewParent}/reviews`,
+      {
+        headers: {
+          Authorization: `Bearer ${auth.credentials.access_token}`
+        }
+      }
+    )
 
-const reviewsResponse = await axios.get(
-  `https://mybusiness.googleapis.com/v4/${reviewParent}/reviews`,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
-  }
-)
-
-const reviews = reviewsResponse.data.reviews || []
+    const reviews = reviewsResponse.data.reviews || []
 
     // Step 4: Save reviews into Supabase
     for (const review of reviews) {
       await supabase.from('reviews').upsert({
         reviewer_name: review.reviewer?.displayName || 'Anonymous',
-        rating: review.starRating
-          ? parseInt(review.starRating.replace('STAR', ''))
-          : 5,
+        rating:
+          review.starRating === 'FIVE' ? 5 :
+          review.starRating === 'FOUR' ? 4 :
+          review.starRating === 'THREE' ? 3 :
+          review.starRating === 'TWO' ? 2 :
+          review.starRating === 'ONE' ? 1 : 0,
         review_text: review.comment || '',
         platform: 'Google',
         reviewed_at: review.createTime
@@ -250,7 +234,6 @@ const reviews = reviewsResponse.data.reviews || []
       synced: reviews.length,
       reviews
     })
-
   } catch (error) {
     console.error('Google review sync error:', error.response?.data || error.message)
 
