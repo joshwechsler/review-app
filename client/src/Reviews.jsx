@@ -34,7 +34,8 @@ function Reviews() {
         rating: { FIVE:5, FOUR:4, THREE:3, TWO:2, ONE:1 }[review.starRating] || 0,
         review_text: review.comment || '',
         reviewed_at: review.createTime,
-        reply: review.reviewReply?.comment || ''
+        reply: review.reviewReply?.comment || '',
+        reviewName: review.name
       }))
       setReviews(formatted)
     } catch (e) {
@@ -53,7 +54,40 @@ function Reviews() {
     const data = await res.json()
     setReplies(prev => ({ ...prev, [item.id]: data.reply }))
   }
+const postReplyToGoogle = async (item) => {
+  const replyText = replies[item.id]
 
+  if (!replyText) {
+    alert('Please generate a reply first.')
+    return
+  }
+
+  if (!item.reviewName) {
+    alert('Missing Google review ID. Please refresh reviews and try again.')
+    return
+  }
+
+  const response = await fetch('/api/google/reply', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      reviewName: item.reviewName,
+      replyText
+    })
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    console.error(data)
+    alert('Could not post reply to Google.')
+    return
+  }
+
+  alert('Reply posted to Google!')
+}
   const generateSocialPost = async (item) => {
     setSocialPosts(prev => ({ ...prev, [item.id]: 'generating' }))
     const res = await fetch('/api/generate-social-post', {
@@ -152,9 +186,24 @@ function Reviews() {
               {replies[item.id] && replies[item.id] !== 'generating' && (
                 <div style={styles.outputBox}>
                   <div style={styles.outputHeader}>
-                    <span style={styles.outputLabel}>AI Reply</span>
-                    <button onClick={() => navigator.clipboard.writeText(replies[item.id])} style={styles.copyBtn}>Copy</button>
-                  </div>
+  <span style={styles.outputLabel}>AI Reply</span>
+
+  <div style={styles.outputActions}>
+    <button
+      onClick={() => navigator.clipboard.writeText(replies[item.id])}
+      style={styles.copyBtn}
+    >
+      Copy
+    </button>
+
+    <button
+      onClick={() => postReplyToGoogle(item)}
+      style={styles.postButton}
+    >
+      Post to Google
+    </button>
+  </div>
+</div>
                   <p style={styles.outputText}>{replies[item.id]}</p>
                 </div>
               )}
@@ -210,7 +259,9 @@ const styles = {
   outputLabel: { fontSize: '12px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' },
   copyBtn: { padding: '4px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', backgroundColor: 'white', fontSize: '12px', cursor: 'pointer', color: '#374151' },
   outputText: { fontSize: '14px', color: '#374151', lineHeight: 1.6 },
-  editableTextarea: { width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '14px', color: '#374151', lineHeight: 1.6, resize: 'vertical', minHeight: '80px', backgroundColor: 'white', marginTop: '4px' }
+  editableTextarea: { width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '14px', color: '#374151', lineHeight: 1.6, resize: 'vertical', minHeight: '80px', backgroundColor: 'white', marginTop: '4px' },
+  outputActions: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
+  postButton: { padding: '4px 12px', borderRadius: '6px', border: 'none', backgroundColor: '#16a34a', color: 'white', fontSize: '12px', cursor: 'pointer' },
 }
 
 export default Reviews
