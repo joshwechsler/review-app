@@ -243,7 +243,39 @@ app.get('/api/google/reviews', async (req, res) => {
     })
   }
 })
-  
+app.post('/api/google/reply', async (req, res) => {
+  const { reviewName, replyText } = req.body
+
+  if (!reviewName || !replyText) {
+    return res.status(400).json({
+      error: 'Missing reviewName or replyText'
+    })
+  }
+
+  try {
+    const auth = await getFreshTokens()
+
+    await axios.put(
+      `https://mybusiness.googleapis.com/v4/${reviewName}/reply`,
+      { comment: replyText },
+      {
+        headers: {
+          Authorization: `Bearer ${auth.credentials.access_token}`
+        }
+      }
+    )
+
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Google reply post error:', error.response?.data || error.message)
+
+    res.status(500).json({
+      error: 'Failed to post reply to Google',
+      details: error.response?.data || error.message
+    })
+  }
+})  
+
 app.post('/api/generate-reply', async (req, res) => {
   console.log('Generate reply route hit:', req.body)
 
