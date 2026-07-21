@@ -276,7 +276,37 @@ app.post('/api/google/reply', async (req, res) => {
     })
   }
 })  
+app.get('/api/facebook/reviews', async (req, res) => {
+  const pageId = process.env.FACEBOOK_PAGE_ID
+  const token = process.env.FACEBOOK_PAGE_TOKEN
 
+  try {
+    const response = await axios.get(
+      `https://graph.facebook.com/v25.0/${pageId}/ratings`,
+      {
+        params: {
+          fields: 'reviewer,rating,review_text,created_time',
+          access_token: token
+        }
+      }
+    )
+
+    res.json({
+      success: true,
+      reviews: response.data.data
+    })
+  } catch (error) {
+  console.error(
+    'Facebook reviews error:',
+    error.response?.data || error.message
+  )
+
+  res.status(error.response?.status || 500).json({
+    error: 'Failed to fetch Facebook reviews',
+    details: error.response?.data || error.message
+  })
+}
+})
 app.post('/api/generate-reply', async (req, res) => {
   console.log('Generate reply route hit:', req.body)
 
