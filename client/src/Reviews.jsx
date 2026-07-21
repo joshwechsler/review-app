@@ -23,26 +23,53 @@ function Reviews() {
   }, [])
 
   const fetchReviews = async () => {
-    try {
-      const response = await fetch('/api/google/reviews')
-      const data = await response.json()
-      if (!response.ok) { setLoading(false); return }
+  try {
+    setLoading(true)
 
-      const formatted = data.reviews.map((review) => ({
-        id: review.reviewId,
-        reviewer_name: review.reviewer?.displayName || 'Anonymous',
-        rating: { FIVE:5, FOUR:4, THREE:3, TWO:2, ONE:1 }[review.starRating] || 0,
-        review_text: review.comment || '',
-        reviewed_at: review.createTime,
-        reply: review.reviewReply?.comment || '',
-        reviewName: review.name
-      }))
-      setReviews(formatted)
-    } catch (e) {
-      console.error(e)
-    }
+    const [googleResponse, facebookResponse] = await Promise.all([
+      fetch('/api/google/reviews'),
+      fetch('/api/facebook/reviews')
+    ])
+
+    const googleData = await googleResponse.json()
+    const facebookData = await facebookResponse.json()
+
+    const googleReviews = googleResponse.ok
+      ? (googleData.reviews || []).map((review) => ({
+          id: `google-${review.reviewId}`,
+          reviewer_name: review.reviewer?.displayName || 'Anonymous',
+          rating:
+            { FIVE: 5, FOUR: 4, THREE: 3, TWO: 2, ONE: 1 }[
+              review.starRating
+            ] || 0,
+          review_text: review.comment || '',
+          reviewed_at: review.createTime,
+          reply: review.reviewReply?.comment || '',
+          reviewName: review.name,
+          platform: 'Google'
+        }))
+      : []
+
+    const facebookReviews = facebookResponse.ok
+      ? (facebookData.reviews || []).map((review, index) => ({
+          id: `facebook-${review.id || index}`,
+          reviewer_name: review.reviewer?.name || 'Facebook User',
+          rating: review.rating || 0,
+          review_text: review.review_text || '',
+          reviewed_at: review.created_time,
+          reply: '',
+          reviewName: '',
+          platform: 'Facebook'
+        }))
+      : []
+
+    setReviews([...googleReviews, ...facebookReviews])
+  } catch (error) {
+    console.error('Error loading reviews:', error)
+  } finally {
     setLoading(false)
   }
+}
 
   const generateReply = async (item) => {
     setReplies(prev => ({ ...prev, [item.id]: 'generating' }))
