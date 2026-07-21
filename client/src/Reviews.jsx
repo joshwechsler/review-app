@@ -142,7 +142,7 @@ const facebookCount = reviews.filter(r => r.platform === 'Facebook').length
 const lowCount = reviews.filter(r => r.rating <= 3).length
 const positiveCount = reviews.filter(r => r.rating >= 4).length
 
-  const lowCount = reviews.filter(r => r.rating <= 3).length
+  
 
   return (
     <div style={styles.page}>
