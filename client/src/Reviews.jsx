@@ -126,9 +126,21 @@ const postReplyToGoogle = async (item) => {
     setSocialPosts(prev => ({ ...prev, [item.id]: data.post }))
   }
 
-  const filtered = activeTab === 'all' ? reviews
-    : activeTab === 'low' ? reviews.filter(r => r.rating <= 3)
-    : reviews.filter(r => r.rating >= 4)
+  const filtered =
+  activeTab === 'all'
+    ? reviews
+    : activeTab === 'google'
+      ? reviews.filter(r => r.platform === 'Google')
+      : activeTab === 'facebook'
+        ? reviews.filter(r => r.platform === 'Facebook')
+        : activeTab === 'low'
+          ? reviews.filter(r => r.rating <= 3)
+          : reviews.filter(r => r.rating >= 4)
+
+const googleCount = reviews.filter(r => r.platform === 'Google').length
+const facebookCount = reviews.filter(r => r.platform === 'Facebook').length
+const lowCount = reviews.filter(r => r.rating <= 3).length
+const positiveCount = reviews.filter(r => r.rating >= 4).length
 
   const lowCount = reviews.filter(r => r.rating <= 3).length
 
@@ -145,10 +157,12 @@ const postReplyToGoogle = async (item) => {
       {/* Tabs */}
       <div style={styles.tabs}>
         {[
-          { key: 'all', label: `All (${reviews.length})` },
-          { key: 'low', label: `Needs Attention (${lowCount})` },
-          { key: 'high', label: `Positive (${reviews.length - lowCount})` }
-        ].map(tab => (
+  { key: 'all', label: `All (${reviews.length})` },
+  { key: 'google', label: `Google (${googleCount})` },
+  { key: 'facebook', label: `Facebook (${facebookCount})` },
+  { key: 'low', label: `Needs Attention (${lowCount})` },
+  { key: 'high', label: `Positive (${positiveCount})` }
+].map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
