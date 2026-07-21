@@ -51,17 +51,17 @@ function Reviews() {
       : []
 
     const facebookReviews = facebookResponse.ok
-      ? (facebookData.reviews || []).map((review, index) => ({
-          id: `facebook-${review.id || index}`,
-          reviewer_name: review.reviewer?.name || 'Facebook User',
-          rating: review.rating || 0,
-          review_text: review.review_text || '',
-          reviewed_at: review.created_time,
-          reply: '',
-          reviewName: '',
-          platform: 'Facebook'
-        }))
-      : []
+  ? (facebookData.reviews || []).map((review, index) => ({
+      id: `facebook-${review.id || index}`,
+      reviewer_name: review.reviewer?.name || 'Facebook User',
+      rating: review.rating || 5,
+      review_text: review.review_text || '',
+      reviewed_at: review.created_time,
+      reply: '',
+      reviewName: '',
+      platform: 'Facebook'
+    }))
+  : []
 
     setReviews([...googleReviews, ...facebookReviews])
   } catch (error) {
@@ -136,7 +136,7 @@ const postReplyToGoogle = async (item) => {
     <div style={styles.page}>
       <div style={styles.header}>
         <div>
-          <h1 style={styles.title}>Google Reviews</h1>
+          <h1 style={styles.title}>Reviews</h1>
           <p style={styles.subtitle}>{reviews.length} reviews synced from Google Business</p>
         </div>
         <button onClick={fetchReviews} style={styles.syncBtn}>↻ Sync Reviews</button>
