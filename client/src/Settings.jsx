@@ -22,6 +22,7 @@ function Settings() {
     const { error } = await supabase.from('settings').update({
       business_name: settings.business_name,
       google_review_link: settings.google_review_link,
+      facebook_review_link: settings.facebook_review_link,
       reply_tone: settings.reply_tone,
       feedback_headline: settings.feedback_headline,
       low_score_message: settings.low_score_message,
@@ -54,6 +55,7 @@ function Settings() {
           <div style={styles.fields}>
             <Field label="Business Name" value={settings.business_name || ''} onChange={v => handleChange('business_name', v)} placeholder="e.g. Honeyplate" />
             <Field label="Google Review Link" value={settings.google_review_link || ''} onChange={v => handleChange('google_review_link', v)} placeholder="https://search.google.com/local/writereview?placeid=..." />
+            <Field label="Facebook Review Link" value={settings.facebook_review_link || ''} onChange={v => handleChange('facebook_review_link', v)} placeholder="https://www.facebook.com/yourpage/reviews" />
           </div>
         </div>
 
