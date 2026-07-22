@@ -217,6 +217,7 @@ app.get('/api/google/reviews', async (req, res) => {
     // Step 4: Save reviews into Supabase
     for (const review of reviews) {
       await supabase.from('reviews').upsert({
+        review_id: review.reviewId,
         reviewer_name: review.reviewer?.displayName || 'Anonymous',
         rating:
           review.starRating === 'FIVE' ? 5 :
@@ -227,7 +228,7 @@ app.get('/api/google/reviews', async (req, res) => {
         review_text: review.comment || '',
         platform: 'Google',
         reviewed_at: review.createTime
-      })
+      }, { onConflict: 'review_id' })
     }
 
     res.json({
