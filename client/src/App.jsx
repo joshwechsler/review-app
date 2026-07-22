@@ -22,9 +22,21 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const emailFromUrl = params.get('email')
+    const ratingFromUrl = parseInt(params.get('rating'))
+
+    if (emailFromUrl) setEmail(emailFromUrl)
+    if (ratingFromUrl) setRating(ratingFromUrl)
+
     if (emailFromUrl) {
-      setEmail(emailFromUrl)
       supabase.from('feedback_responses').insert([{ email: emailFromUrl, status: 'clicked' }])
+    }
+
+    // If rating came from email link, auto-handle immediately after settings load
+    if (ratingFromUrl >= 4) {
+      supabase.from('settings').select('*').limit(1).single().then(({ data }) => {
+        const link = data?.google_review_link || 'https://search.google.com/local/writereview'
+        window.location.href = link
+      })
     }
   }, [])
 
