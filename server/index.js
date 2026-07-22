@@ -202,20 +202,29 @@ app.get('/api/google/reviews', async (req, res) => {
     const locationName = locations[0].name
     const reviewParent = `${accountName}/${locationName}`
 
-    // Step 3: Get reviews
-    const reviewsResponse = await axios.get(
-      `https://mybusiness.googleapis.com/v4/${reviewParent}/reviews`,
-      {
-        headers: {
-          Authorization: `Bearer ${auth.credentials.access_token}`
+    // Step 3: Get all reviews via pagination
+    const allReviews = []
+    let pageToken = null
+
+    do {
+      const params = { pageSize: 50 }
+      if (pageToken) params.pageToken = pageToken
+
+      const reviewsResponse = await axios.get(
+        `https://mybusiness.googleapis.com/v4/${reviewParent}/reviews`,
+        {
+          headers: { Authorization: `Bearer ${auth.credentials.access_token}` },
+          params
         }
-      }
-    )
+      )
 
-    const reviews = reviewsResponse.data.reviews || []
+      const batch = reviewsResponse.data.reviews || []
+      allReviews.push(...batch)
+      pageToken = reviewsResponse.data.nextPageToken || null
+    } while (pageToken)
 
-    // Step 4: Save reviews into Supabase
-    for (const review of reviews) {
+    // Step 4: Save all reviews into Supabase
+    for (const review of allReviews) {
       await supabase.from('reviews').upsert({
         review_id: review.reviewId,
         reviewer_name: review.reviewer?.displayName || 'Anonymous',
@@ -233,8 +242,8 @@ app.get('/api/google/reviews', async (req, res) => {
 
     res.json({
       success: true,
-      synced: reviews.length,
-      reviews
+      synced: allReviews.length,
+      reviews: allReviews
     })
   } catch (error) {
     console.error('Google review sync error:', error.response?.data || error.message)
