@@ -235,6 +235,8 @@ app.get('/api/google/reviews', async (req, res) => {
           review.starRating === 'TWO' ? 2 :
           review.starRating === 'ONE' ? 1 : 0,
         review_text: review.comment || '',
+        reply_text: review.reviewReply?.comment || null,
+        replied: !!review.reviewReply,
         platform: 'Google',
         reviewed_at: review.createTime
       }, { onConflict: 'review_id' })
