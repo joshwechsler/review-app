@@ -15,7 +15,10 @@ function App() {
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
   const [consent, setConsent] = useState(true)
-  const [step, setStep] = useState(1) // 1 = survey, 2 = thank you / review prompt
+  const [step, setStep] = useState(1) // 1 = survey, 2 = review prompt or feedback form, 3 = done
+  const [name, setName] = useState('')
+  const [privateFeedback, setPrivateFeedback] = useState('')
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [settings, setSettings] = useState(null)
 
   const isFeedbackPage = location.pathname === '/feedback'
@@ -156,11 +159,43 @@ function App() {
               )}
             </div>
           </>
-        ) : (
+        ) : feedbackSubmitted ? (
           <>
             <div style={fb.checkmark}>✓</div>
             <h1 style={fb.heading}>Thank You</h1>
             <p style={fb.sub}>{settings?.low_score_message || 'We appreciate your feedback and will use it to improve.'}</p>
+          </>
+        ) : (
+          <>
+            <h1 style={fb.heading}>We're sorry to hear that</h1>
+            <p style={fb.sub}>Tell us more so we can make it right.</p>
+            <form onSubmit={async (e) => {
+              e.preventDefault()
+              await supabase.from('feedback_responses').insert([{
+                email,
+                rating,
+                comment: privateFeedback,
+                reviewer_name: name,
+                status: 'reviewed'
+              }]).catch(() => {})
+              setFeedbackSubmitted(true)
+            }} style={{ ...fb.form, textAlign: 'left' }}>
+              <input
+                type="text"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={fb.input}
+              />
+              <textarea
+                placeholder="What could we have done better?"
+                value={privateFeedback}
+                onChange={(e) => setPrivateFeedback(e.target.value)}
+                style={{ ...fb.textarea, minHeight: '120px' }}
+                required
+              />
+              <button type="submit" style={fb.submit}>Send Feedback</button>
+            </form>
           </>
         )}
       </div>
