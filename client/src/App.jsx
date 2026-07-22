@@ -167,8 +167,8 @@ function App() {
           </>
         ) : (
           <>
-            <h1 style={fb.heading}>We're sorry to hear that</h1>
-            <p style={fb.sub}>Tell us more so we can make it right.</p>
+            <h1 style={fb.heading}>We want to hear from you.</h1>
+            <p style={fb.sub}>Every piece of feedback makes us better. Tell us what we could have done differently.</p>
             <form onSubmit={async (e) => {
               e.preventDefault()
               await supabase.from('feedback_responses').insert([{
