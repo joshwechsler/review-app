@@ -133,7 +133,7 @@ const positiveCount = reviews.filter(r => r.rating >= 4).length
       <div style={styles.header}>
         <div>
           <h1 style={styles.title}>Reviews</h1>
-          <p style={styles.subtitle}>{reviews.length} reviews synced from Google Business</p>
+          <p style={styles.subtitle}>{reviews.length} reviews synced across Google and Facebook</p>
         </div>
         <button onClick={fetchReviews} style={styles.syncBtn}>↻ Sync Reviews</button>
       </div>
